@@ -1,13 +1,13 @@
 # Helios Stack
 
-Reproducible Docker infrastructure for `hel-prod-cont-docker`. Mirrors the structure of [soteria-compose](https://github.com/maakleerplek/soteria_compose).
+Reproducible Docker infrastructure for `hel-prod-app-docker`. Mirrors the structure of [soteria-compose](https://github.com/maakleerplek/soteria_compose).
 
 This repo covers **infrastructure-level services only**. User-deployed apps are managed by Coolify and are not tracked here.
 
 ## Architecture
 
 ```
-hel-prod-cont-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
+hel-prod-app-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
   ├── hel-prod-apps-coolify     Self-service app deployment platform
   └── hel-prod-inv-netbox       Network inventory (+ worker, postgres, redis)
 ```

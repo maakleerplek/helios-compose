@@ -4,7 +4,7 @@ This file provides guidance to Claude Code when working in this repository.
 
 ## Project Overview
 
-Docker Compose infrastructure for `hel-prod-cont-docker` — the Docker host VM on Helios (Proxmox). Mirrors the structure of soteria-compose. Infrastructure-level services only; Coolify manages its own app stacks separately.
+Docker Compose infrastructure for `hel-prod-app-docker` — the Docker host VM on Helios (Proxmox). Mirrors the structure of soteria-compose. Infrastructure-level services only; Coolify manages its own app stacks separately.
 
 ## Architecture
 
