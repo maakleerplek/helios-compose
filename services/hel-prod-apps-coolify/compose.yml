@@ -18,7 +18,7 @@ services:
       PUSHER_BACKEND_HOST: hel-prod-apps-coolify-realtime
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-coolify:/var/www/html/storage/app
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8000:8080"
     depends_on:
