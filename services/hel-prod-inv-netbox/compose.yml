@@ -23,9 +23,9 @@ services:
       SOCIAL_AUTH_OIDC_KEY: ${NETBOX_OIDC_CLIENT_ID}
       SOCIAL_AUTH_OIDC_SECRET: ${NETBOX_OIDC_CLIENT_SECRET}
     volumes:
-      - /docker_data/hel-prod-inv-netbox-media:/opt/netbox/netbox/media
-      - /docker_data/hel-prod-inv-netbox-reports:/opt/netbox/netbox/reports
-      - /docker_data/hel-prod-inv-netbox-scripts:/opt/netbox/netbox/scripts
+      - /var/lib/docker-compose/hel-prod-inv-netbox-media:/opt/netbox/netbox/media
+      - /var/lib/docker-compose/hel-prod-inv-netbox-reports:/opt/netbox/netbox/reports
+      - /var/lib/docker-compose/hel-prod-inv-netbox-scripts:/opt/netbox/netbox/scripts
     ports:
       - "8080:8080"
     depends_on:
@@ -60,7 +60,7 @@ services:
       POSTGRES_USER: ${NETBOX_DB_USER}
       POSTGRES_PASSWORD: ${NETBOX_DB_PASSWORD}
     volumes:
-      - /docker_data/hel-prod-inv-netbox-db:/var/lib/postgresql/data
+      - /var/lib/docker-compose/hel-prod-inv-netbox-db:/var/lib/postgresql/data
 
   hel-prod-inv-netbox-redis:
     image: redis:7-alpine
@@ -69,7 +69,7 @@ services:
     environment:
       TZ: 'Europe/Brussels'
     volumes:
-      - /docker_data/hel-prod-inv-netbox-redis:/data
+      - /var/lib/docker-compose/hel-prod-inv-netbox-redis:/data
 
   hel-prod-inv-netbox-redis-cache:
     image: redis:7-alpine
@@ -78,4 +78,4 @@ services:
     environment:
       TZ: 'Europe/Brussels'
     volumes:
-      - /docker_data/hel-prod-inv-netbox-redis-cache:/data
+      - /var/lib/docker-compose/hel-prod-inv-netbox-redis-cache:/data

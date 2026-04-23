@@ -32,7 +32,7 @@ restart:
 
 ## Backup all data and secrets to TrueNAS
 backup:
-	rsync -az /docker_data/ hel-prod-nas-truenas:/mnt/pool/backups/helios/docker_data/
+	rsync -az /var/lib/docker-compose/ hel-prod-nas-truenas:/mnt/pool/backups/helios/var/lib/docker-compose/
 	rsync -az ./secrets/.env hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/
 
 ## Show this help

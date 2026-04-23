@@ -17,7 +17,7 @@ services:
       PUSHER_HOST: hel-prod-apps-coolify-realtime
       PUSHER_BACKEND_HOST: hel-prod-apps-coolify-realtime
     volumes:
-      - /docker_data/hel-prod-apps-coolify:/var/www/html/storage/app
+      - /var/lib/docker-compose/hel-prod-apps-coolify:/var/www/html/storage/app
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - "8000:80"
@@ -36,7 +36,7 @@ services:
       POSTGRES_USER: ${COOLIFY_DB_USER}
       POSTGRES_PASSWORD: ${COOLIFY_DB_PASSWORD}
     volumes:
-      - /docker_data/hel-prod-apps-coolify-db:/var/lib/postgresql/data
+      - /var/lib/docker-compose/hel-prod-apps-coolify-db:/var/lib/postgresql/data
 
   hel-prod-apps-coolify-redis:
     image: redis:7-alpine
@@ -45,7 +45,7 @@ services:
     environment:
       TZ: 'Europe/Brussels'
     volumes:
-      - /docker_data/hel-prod-apps-coolify-redis:/data
+      - /var/lib/docker-compose/hel-prod-apps-coolify-redis:/data
 
   hel-prod-apps-coolify-realtime:
     image: ghcr.io/coollabsio/coolify-realtime:latest

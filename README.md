@@ -14,7 +14,7 @@ hel-prod-cont-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
 
 ## Data Management
 
-- **All persistent data**: `/docker_data/` — backed up to TrueNAS
+- **All persistent data**: `/var/lib/docker-compose/` — backed up to TrueNAS
 - **Secrets**: `./secrets/.env` — excluded from Git, backed up to TrueNAS + stored in Bitwarden
 - **Configuration**: all `compose.yml` files — version controlled here
 
@@ -46,7 +46,7 @@ make backup       # rsync data + secrets to TrueNAS
    ```
 4. **Restore data from TrueNAS**
    ```bash
-   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/docker_data/ /docker_data/
+   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/var/lib/docker-compose/ /var/lib/docker-compose/
    ```
 5. **Restore secrets**
    ```bash
