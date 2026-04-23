@@ -20,7 +20,7 @@ services:
       - /var/lib/docker-compose/hel-prod-apps-coolify:/var/www/html/storage/app
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "8000:80"
+      - "8000:8080"
     depends_on:
       - hel-prod-apps-coolify-db
       - hel-prod-apps-coolify-redis
