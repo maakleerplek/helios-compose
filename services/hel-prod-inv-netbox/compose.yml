@@ -1,0 +1,81 @@
+services:
+  hel-prod-inv-netbox:
+    image: ghcr.io/netbox-community/netbox:latest
+    container_name: hel-prod-inv-netbox
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+      DB_HOST: hel-prod-inv-netbox-db
+      DB_NAME: ${NETBOX_DB_NAME}
+      DB_USER: ${NETBOX_DB_USER}
+      DB_PASSWORD: ${NETBOX_DB_PASSWORD}
+      REDIS_HOST: hel-prod-inv-netbox-redis
+      REDIS_CACHE_HOST: hel-prod-inv-netbox-redis-cache
+      SECRET_KEY: ${NETBOX_SECRET_KEY}
+      ALLOWED_HOSTS: ${NETBOX_ALLOWED_HOSTS}
+      SUPERUSER_NAME: ${NETBOX_SUPERUSER_NAME}
+      SUPERUSER_EMAIL: ${NETBOX_SUPERUSER_EMAIL}
+      SUPERUSER_PASSWORD: ${NETBOX_SUPERUSER_PASSWORD}
+      # Authentik OIDC
+      REMOTE_AUTH_ENABLED: "true"
+      REMOTE_AUTH_BACKEND: "social_core.backends.open_id_connect.OpenIdConnectAuth"
+      SOCIAL_AUTH_OIDC_ENDPOINT: ${NETBOX_OIDC_ENDPOINT}
+      SOCIAL_AUTH_OIDC_KEY: ${NETBOX_OIDC_CLIENT_ID}
+      SOCIAL_AUTH_OIDC_SECRET: ${NETBOX_OIDC_CLIENT_SECRET}
+    volumes:
+      - /docker_data/hel-prod-inv-netbox-media:/opt/netbox/netbox/media
+      - /docker_data/hel-prod-inv-netbox-reports:/opt/netbox/netbox/reports
+      - /docker_data/hel-prod-inv-netbox-scripts:/opt/netbox/netbox/scripts
+    ports:
+      - "8080:8080"
+    depends_on:
+      - hel-prod-inv-netbox-db
+      - hel-prod-inv-netbox-redis
+      - hel-prod-inv-netbox-redis-cache
+
+  hel-prod-inv-netbox-worker:
+    image: ghcr.io/netbox-community/netbox:latest
+    container_name: hel-prod-inv-netbox-worker
+    restart: unless-stopped
+    command: /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker
+    environment:
+      TZ: 'Europe/Brussels'
+      DB_HOST: hel-prod-inv-netbox-db
+      DB_NAME: ${NETBOX_DB_NAME}
+      DB_USER: ${NETBOX_DB_USER}
+      DB_PASSWORD: ${NETBOX_DB_PASSWORD}
+      REDIS_HOST: hel-prod-inv-netbox-redis
+      REDIS_CACHE_HOST: hel-prod-inv-netbox-redis-cache
+      SECRET_KEY: ${NETBOX_SECRET_KEY}
+    depends_on:
+      - hel-prod-inv-netbox
+
+  hel-prod-inv-netbox-db:
+    image: postgres:16-alpine
+    container_name: hel-prod-inv-netbox-db
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+      POSTGRES_DB: ${NETBOX_DB_NAME}
+      POSTGRES_USER: ${NETBOX_DB_USER}
+      POSTGRES_PASSWORD: ${NETBOX_DB_PASSWORD}
+    volumes:
+      - /docker_data/hel-prod-inv-netbox-db:/var/lib/postgresql/data
+
+  hel-prod-inv-netbox-redis:
+    image: redis:7-alpine
+    container_name: hel-prod-inv-netbox-redis
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+    volumes:
+      - /docker_data/hel-prod-inv-netbox-redis:/data
+
+  hel-prod-inv-netbox-redis-cache:
+    image: redis:7-alpine
+    container_name: hel-prod-inv-netbox-redis-cache
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+    volumes:
+      - /docker_data/hel-prod-inv-netbox-redis-cache:/data

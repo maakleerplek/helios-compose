@@ -1,0 +1,86 @@
+# Helios Stack
+
+Reproducible Docker infrastructure for `hel-prod-cont-docker`. Mirrors the structure of [soteria-compose](https://github.com/maakleerplek/soteria_compose).
+
+This repo covers **infrastructure-level services only**. User-deployed apps are managed by Coolify and are not tracked here.
+
+## Architecture
+
+```
+hel-prod-cont-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
+  ├── hel-prod-apps-coolify     Self-service app deployment platform
+  └── hel-prod-inv-netbox       Network inventory (+ worker, postgres, redis)
+```
+
+## Data Management
+
+- **All persistent data**: `/docker_data/` — backed up to TrueNAS
+- **Secrets**: `./secrets/.env` — excluded from Git, backed up to TrueNAS + stored in Bitwarden
+- **Configuration**: all `compose.yml` files — version controlled here
+
+## Common Operations
+
+```bash
+make deploy       # pull latest images + start all services
+make up           # start all services (no pull)
+make down         # stop all services (no data loss)
+make ps           # show container status
+make logs         # stream all logs
+make logs SERVICE=hel-prod-inv-netbox   # stream logs for one service
+make restart SERVICE=hel-prod-inv-netbox
+make backup       # rsync data + secrets to TrueNAS
+```
+
+## 🚨 Disaster Recovery
+
+1. **Provision fresh Rocky 9.5 VM on Helios**
+2. **Install Docker**
+   ```bash
+   curl -fsSL https://get.docker.com | sh
+   sudo usermod -aG docker $USER
+   ```
+3. **Clone this repo**
+   ```bash
+   git clone https://github.com/maakleerplek/helios-compose
+   cd helios-compose
+   ```
+4. **Restore data from TrueNAS**
+   ```bash
+   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/docker_data/ /docker_data/
+   ```
+5. **Restore secrets**
+   ```bash
+   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/.env ./secrets/.env
+   # Or retrieve from Bitwarden
+   ```
+6. **Deploy**
+   ```bash
+   make up
+   ```
+7. **Verify**
+   ```bash
+   make ps
+   make logs
+   ```
+
+## Adding a New Service
+
+1. Create `services/hel-prod-{role}-{app}/compose.yml`
+2. Follow the conventions in CLAUDE.md
+3. Add the include line to root `docker-compose.yml`
+4. Add secrets to `secrets/.env` and update `secrets/.env.example`
+5. `make deploy`
+6. Commit and push
+
+## Current Services
+
+| Service | Role | Port | Notes |
+|---|---|---|---|
+| `hel-prod-apps-coolify` | Self-service app platform | 8000 | Proxied by NPM on Soteria |
+| `hel-prod-inv-netbox` | Network inventory | 8080 | Proxied by NPM on Soteria |
+
+## Planned Services
+
+| Service | Role |
+|---|---|
+| `hel-prod-mon-grafana` | Monitoring stack (Grafana + Prometheus + InfluxDB) |
