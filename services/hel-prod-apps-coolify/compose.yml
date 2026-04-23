@@ -3,58 +3,98 @@ services:
     image: ghcr.io/coollabsio/coolify:latest
     container_name: hel-prod-apps-coolify
     restart: unless-stopped
-    environment:
-      TZ: 'Europe/Brussels'
-      APP_ID: ${COOLIFY_APP_ID}
-      APP_KEY: ${COOLIFY_APP_KEY}
-      APP_URL: ${COOLIFY_APP_URL}
-      DB_CONNECTION: pgsql
-      DB_HOST: hel-prod-apps-coolify-db
-      DB_DATABASE: ${COOLIFY_DB_NAME}
-      DB_USERNAME: ${COOLIFY_DB_USER}
-      DB_PASSWORD: ${COOLIFY_DB_PASSWORD}
-      REDIS_HOST: hel-prod-apps-coolify-redis
-      PUSHER_HOST: hel-prod-apps-coolify-realtime
-      PUSHER_BACKEND_HOST: hel-prod-apps-coolify-realtime
+    working_dir: /var/www/html
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - ../../secrets/coolify.env
     volumes:
-      - /var/lib/docker-compose/hel-prod-apps-coolify:/var/www/html/storage/app
+      - type: bind
+        source: ../../secrets/coolify.env
+        target: /var/www/html/.env
+        read_only: true
       - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker-compose/hel-prod-apps-coolify-ssh:/var/www/html/storage/app/ssh
+      - /var/lib/docker-compose/hel-prod-apps-coolify-applications:/var/www/html/storage/app/applications
+      - /var/lib/docker-compose/hel-prod-apps-coolify-databases:/var/www/html/storage/app/databases
+      - /var/lib/docker-compose/hel-prod-apps-coolify-services:/var/www/html/storage/app/services
+      - /var/lib/docker-compose/hel-prod-apps-coolify-backups:/var/www/html/storage/app/backups
     ports:
       - "8000:8080"
+    networks:
+      - coolify
     depends_on:
-      - hel-prod-apps-coolify-db
-      - hel-prod-apps-coolify-redis
-      - hel-prod-apps-coolify-realtime
+      hel-prod-apps-coolify-db:
+        condition: service_healthy
+      hel-prod-apps-coolify-redis:
+        condition: service_healthy
+      hel-prod-apps-coolify-realtime:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://127.0.0.1:8080/api/health || exit 1
+      interval: 5s
+      retries: 10
+      timeout: 2s
 
   hel-prod-apps-coolify-db:
-    image: postgres:16-alpine
+    image: postgres:15-alpine
     container_name: hel-prod-apps-coolify-db
     restart: unless-stopped
     environment:
       TZ: 'Europe/Brussels'
-      POSTGRES_DB: ${COOLIFY_DB_NAME}
-      POSTGRES_USER: ${COOLIFY_DB_USER}
+      POSTGRES_DB: coolify
+      POSTGRES_USER: coolify
       POSTGRES_PASSWORD: ${COOLIFY_DB_PASSWORD}
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-coolify-db:/var/lib/postgresql/data
+    networks:
+      - coolify
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coolify -d coolify"]
+      interval: 5s
+      retries: 10
+      timeout: 2s
 
   hel-prod-apps-coolify-redis:
     image: redis:7-alpine
     container_name: hel-prod-apps-coolify-redis
     restart: unless-stopped
-    environment:
-      TZ: 'Europe/Brussels'
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-coolify-redis:/data
+    networks:
+      - coolify
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      retries: 10
+      timeout: 2s
 
   hel-prod-apps-coolify-realtime:
-    image: ghcr.io/coollabsio/coolify-realtime:latest
+    image: ghcr.io/coollabsio/coolify-realtime:1.0.13
     container_name: hel-prod-apps-coolify-realtime
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      TZ: 'Europe/Brussels'
-      PUSHER_APP_ID: ${COOLIFY_PUSHER_APP_ID}
-      PUSHER_APP_KEY: ${COOLIFY_PUSHER_APP_KEY}
-      PUSHER_APP_SECRET: ${COOLIFY_PUSHER_APP_SECRET}
+      APP_NAME: Coolify
+      SOKETI_DEBUG: "false"
+      SOKETI_DEFAULT_APP_ID: ${COOLIFY_PUSHER_APP_ID}
+      SOKETI_DEFAULT_APP_KEY: ${COOLIFY_PUSHER_APP_KEY}
+      SOKETI_DEFAULT_APP_SECRET: ${COOLIFY_PUSHER_APP_SECRET}
+      SOKETI_HOST: "0.0.0.0"
+    ports:
+      - "6001:6001"
+      - "6002:6002"
+    networks:
+      - coolify
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:6001/ready && wget -qO- http://127.0.0.1:6002/ready || exit 1"]
+      interval: 5s
+      retries: 10
+      timeout: 2s
+
+networks:
+  coolify:
+    name: coolify
+    driver: bridge
+    attachable: true

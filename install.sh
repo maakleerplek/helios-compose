@@ -37,7 +37,11 @@ mkdir -p /opt/stacks
 
 echo "==> Creating /var/lib/docker-compose data directories"
 mkdir -p \
-  /var/lib/docker-compose/hel-prod-apps-coolify \
+  /var/lib/docker-compose/hel-prod-apps-coolify-ssh \
+  /var/lib/docker-compose/hel-prod-apps-coolify-applications \
+  /var/lib/docker-compose/hel-prod-apps-coolify-databases \
+  /var/lib/docker-compose/hel-prod-apps-coolify-services \
+  /var/lib/docker-compose/hel-prod-apps-coolify-backups \
   /var/lib/docker-compose/hel-prod-apps-coolify-db \
   /var/lib/docker-compose/hel-prod-apps-coolify-redis \
   /var/lib/docker-compose/hel-prod-inv-netbox-media \
@@ -46,6 +50,16 @@ mkdir -p \
   /var/lib/docker-compose/hel-prod-inv-netbox-db \
   /var/lib/docker-compose/hel-prod-inv-netbox-redis \
   /var/lib/docker-compose/hel-prod-inv-netbox-redis-cache
+
+echo "==> Setting Coolify storage ownership (runs as UID 9999)"
+chown -R 9999:root /var/lib/docker-compose/hel-prod-apps-coolify-ssh \
+  /var/lib/docker-compose/hel-prod-apps-coolify-applications \
+  /var/lib/docker-compose/hel-prod-apps-coolify-databases \
+  /var/lib/docker-compose/hel-prod-apps-coolify-services \
+  /var/lib/docker-compose/hel-prod-apps-coolify-backups
+
+echo "==> Creating coolify Docker network"
+docker network create --attachable coolify 2>/dev/null || echo "    network 'coolify' already exists"
 
 # --- Clone repo --------------------------------------------------------------
 
@@ -66,8 +80,9 @@ echo "  1. Restore data from TrueNAS:"
 echo "       rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/docker_data/ /var/lib/docker-compose/"
 echo ""
 echo "  2. Restore secrets:"
-echo "       rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/.env /opt/stacks/helios-compose/secrets/.env"
-echo "       # Or retrieve from Bitwarden and create secrets/.env manually"
+echo "       rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/ /opt/stacks/helios-compose/secrets/"
+echo "       # Or retrieve from Bitwarden and create secrets/.env + secrets/coolify.env manually"
+echo "       # See secrets/*.example for templates"
 echo ""
 echo "  3. Deploy:"
 echo "       cd /opt/stacks/helios-compose && make up"
