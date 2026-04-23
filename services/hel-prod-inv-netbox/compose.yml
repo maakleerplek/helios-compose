@@ -12,6 +12,7 @@ services:
       REDIS_HOST: hel-prod-inv-netbox-redis
       REDIS_CACHE_HOST: hel-prod-inv-netbox-redis-cache
       SECRET_KEY: ${NETBOX_SECRET_KEY}
+      API_TOKEN_PEPPERS: ${NETBOX_API_TOKEN_PEPPERS}
       ALLOWED_HOSTS: ${NETBOX_ALLOWED_HOSTS}
       SUPERUSER_NAME: ${NETBOX_SUPERUSER_NAME}
       SUPERUSER_EMAIL: ${NETBOX_SUPERUSER_EMAIL}
@@ -47,6 +48,7 @@ services:
       REDIS_HOST: hel-prod-inv-netbox-redis
       REDIS_CACHE_HOST: hel-prod-inv-netbox-redis-cache
       SECRET_KEY: ${NETBOX_SECRET_KEY}
+      API_TOKEN_PEPPERS: ${NETBOX_API_TOKEN_PEPPERS}
     depends_on:
       - hel-prod-inv-netbox
 
