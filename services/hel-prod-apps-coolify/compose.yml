@@ -16,6 +16,8 @@ services:
       REDIS_HOST: hel-prod-apps-coolify-redis
       PUSHER_HOST: hel-prod-apps-coolify-realtime
       PUSHER_BACKEND_HOST: hel-prod-apps-coolify-realtime
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-coolify:/var/www/html/storage/app
       - /var/run/docker.sock:/var/run/docker.sock
