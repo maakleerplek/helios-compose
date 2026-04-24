@@ -28,7 +28,7 @@ services:
       - /var/lib/docker-compose/hel-prod-inv-netbox-reports:/opt/netbox/netbox/reports
       - /var/lib/docker-compose/hel-prod-inv-netbox-scripts:/opt/netbox/netbox/scripts
     ports:
-      - "8080:8080"
+      - "8082:8080"
     depends_on:
       - hel-prod-inv-netbox-db
       - hel-prod-inv-netbox-redis
