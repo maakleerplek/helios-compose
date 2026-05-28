@@ -5,7 +5,7 @@ ENV_FILE := ./secrets/helios.env
 
 ## Start all services
 up:
-	docker compose --env-file $(ENV_FILE) up -d
+	docker compose --env-file $(ENV_FILE) up -d --remove-orphans
 
 ## Stop all services (no data loss)
 down:
