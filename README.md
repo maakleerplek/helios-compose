@@ -2,14 +2,15 @@
 
 Reproducible Docker infrastructure for `hel-prod-app-docker`. Mirrors the structure of [soteria-compose](https://github.com/maakleerplek/soteria_compose).
 
-This repo covers **infrastructure-level services only**. User-deployed apps are managed by Coolify and are not tracked here.
+This repo covers **infrastructure-level services only**.
 
 ## Architecture
 
 ```
 hel-prod-app-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
-  ├── hel-prod-apps-coolify     Self-service app deployment platform
-  └── hel-prod-inv-netbox       Network inventory (+ worker, postgres, redis)
+  ├── hel-prod-apps-taiga        ICT project planning (+ async, front, events, gateway, rabbitmq, postgres)
+  ├── hel-prod-apps-truedesk     User helpdesk & feature requests (+ mongodb)
+  └── hel-prod-apps-watchtower   Nightly auto-update of app containers
 ```
 
 ## Data Management
@@ -26,8 +27,8 @@ make up           # start all services (no pull)
 make down         # stop all services (no data loss)
 make ps           # show container status
 make logs         # stream all logs
-make logs SERVICE=hel-prod-inv-netbox   # stream logs for one service
-make restart SERVICE=hel-prod-inv-netbox
+make logs SERVICE=hel-prod-apps-taiga-back   # stream logs for one service
+make restart SERVICE=hel-prod-apps-taiga-back
 make backup       # rsync data + secrets to TrueNAS
 ```
 
@@ -50,7 +51,7 @@ make backup       # rsync data + secrets to TrueNAS
    ```
 5. **Restore secrets**
    ```bash
-   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/.env ./secrets/.env
+   rsync -az hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/ ./secrets/
    # Or retrieve from Bitwarden
    ```
 6. **Deploy**
@@ -76,11 +77,13 @@ make backup       # rsync data + secrets to TrueNAS
 
 | Service | Role | Port | Notes |
 |---|---|---|---|
-| `hel-prod-apps-coolify` | Self-service app platform | 8000 | Proxied by NPM on Soteria |
-| `hel-prod-inv-netbox` | Network inventory | 8080 | Proxied by NPM on Soteria |
+| `hel-prod-apps-taiga` | ICT project planning | 8083 | Proxied by NPM → `taiga.maakleerplek.be` |
+| `hel-prod-apps-truedesk` | User helpdesk & feature requests | 8084 | Proxied by NPM → `truedesk.maakleerplek.be` |
+| `hel-prod-apps-watchtower` | Nightly container auto-update | — | DBs excluded, runs at 04:00 |
 
 ## Planned Services
 
 | Service | Role |
 |---|---|
 | `hel-prod-mon-grafana` | Monitoring stack (Grafana + Prometheus + InfluxDB) |
+| `hel-prod-apps-webhook` | GitOps auto-deploy on git push (see `feature.md`) |
