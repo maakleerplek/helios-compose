@@ -17,7 +17,7 @@ hel-prod-app-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
 ## Data Management
 
 - **All persistent data**: `/var/lib/docker-compose/` — backed up to TrueNAS
-- **Secrets**: `./secrets/.env` — excluded from Git, backed up to TrueNAS + stored in Bitwarden
+- **Secrets**: `./secrets/helios.env` — excluded from Git, backed up to TrueNAS + stored in Bitwarden
 - **Configuration**: all `compose.yml` files — version controlled here
 
 ## Common Operations
@@ -85,6 +85,15 @@ make backup       # rsync data + secrets to TrueNAS
 | `hel-prod-mon-prometheus` | Metrics storage (30d retention) | — | Internal only |
 | `hel-prod-mon-node-exporter` | Host metrics | — | Internal only |
 | `hel-prod-mon-cadvisor` | Container metrics | — | Internal only |
+
+## Grafana Dashboards
+
+After first login to Grafana, import these from the dashboard library (Dashboards → Import → enter ID):
+
+| ID | Dashboard |
+|---|---|
+| `1860` | Node Exporter Full — host CPU, RAM, disk, network |
+| `14282` | Docker cAdvisor — per-container resource usage |
 
 ## Planned Services
 
