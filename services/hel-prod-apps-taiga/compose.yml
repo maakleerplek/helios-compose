@@ -32,7 +32,7 @@ services:
       - taiga
 
   hel-prod-apps-taiga-back:
-    image: taigaio/taiga-back:6.10.1
+    image: taigaio/taiga-back:latest
     container_name: hel-prod-apps-taiga-back
     restart: unless-stopped
     environment:
@@ -59,7 +59,7 @@ services:
       - hel-prod-apps-taiga-rabbitmq
 
   hel-prod-apps-taiga-async:
-    image: taigaio/taiga-back:6.10.1
+    image: taigaio/taiga-back:latest
     container_name: hel-prod-apps-taiga-async
     restart: unless-stopped
     entrypoint: ["/taiga-back/docker/async_entrypoint.sh"]
@@ -85,7 +85,7 @@ services:
       - hel-prod-apps-taiga-back
 
   hel-prod-apps-taiga-front:
-    image: taigaio/taiga-front:6.10.1
+    image: taigaio/taiga-front:latest
     container_name: hel-prod-apps-taiga-front
     restart: unless-stopped
     environment:
@@ -98,7 +98,7 @@ services:
       - taiga
 
   hel-prod-apps-taiga-events:
-    image: taigaio/taiga-events:6.10.1
+    image: taigaio/taiga-events:latest
     container_name: hel-prod-apps-taiga-events
     restart: unless-stopped
     environment:
@@ -111,7 +111,7 @@ services:
       - hel-prod-apps-taiga-rabbitmq
 
   hel-prod-apps-taiga-protected:
-    image: taigaio/taiga-protected:6.10.1
+    image: taigaio/taiga-protected:latest
     container_name: hel-prod-apps-taiga-protected
     restart: unless-stopped
     environment:

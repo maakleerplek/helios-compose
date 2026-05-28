@@ -1,7 +1,7 @@
 .PHONY: up down pull deploy logs ps restart backup help
 
 # Load secrets
-ENV_FILE := ./secrets/.env
+ENV_FILE := ./secrets/helios.env
 
 ## Start all services
 up:
@@ -33,7 +33,7 @@ restart:
 ## Backup all data and secrets to TrueNAS
 backup:
 	rsync -az /var/lib/docker-compose/ hel-prod-nas-truenas:/mnt/pool/backups/helios/var/lib/docker-compose/
-	rsync -az ./secrets/.env hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/
+	rsync -az ./secrets/helios.env hel-prod-nas-truenas:/mnt/pool/backups/helios/secrets/
 
 ## Show this help
 help:
