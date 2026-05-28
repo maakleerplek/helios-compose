@@ -19,8 +19,9 @@ services:
     environment:
       TZ: 'Europe/Brussels'
       NODE_ENV: production
-      TRUDESK_DOMAIN: ${TRUEDESK_DOMAIN}
-      MONGODB_URI: mongodb://hel-prod-apps-truedesk-db:27017/trudesk
+      TRUDESK_DOCKER: "true"
+      TD_MONGODB_SERVER: hel-prod-apps-truedesk-db
+      TD_MONGODB_DATABASE: trudesk
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-truedesk:/usr/src/app/uploads
     ports:
