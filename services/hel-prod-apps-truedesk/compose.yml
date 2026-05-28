@@ -1,6 +1,6 @@
 services:
   hel-prod-apps-truedesk-db:
-    image: mongo:6
+    image: mongo:4.4
     container_name: hel-prod-apps-truedesk-db
     restart: unless-stopped
     labels:
