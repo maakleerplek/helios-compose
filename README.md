@@ -10,7 +10,8 @@ This repo covers **infrastructure-level services only**.
 hel-prod-app-docker (Rocky 9.5 — Docker host on Helios/Proxmox)
   ├── hel-prod-apps-taiga        ICT project planning (+ async, front, events, gateway, rabbitmq, postgres)
   ├── hel-prod-apps-truedesk     User helpdesk & feature requests (+ mongodb)
-  └── hel-prod-apps-watchtower   Nightly auto-update of app containers
+  ├── hel-prod-apps-watchtower   Nightly auto-update of app containers
+  └── hel-prod-mon               Monitoring stack (Grafana + Prometheus + node-exporter + cAdvisor)
 ```
 
 ## Data Management
@@ -80,10 +81,13 @@ make backup       # rsync data + secrets to TrueNAS
 | `hel-prod-apps-taiga` | ICT project planning | 8083 | Proxied by NPM → `taiga.maakleerplek.be` |
 | `hel-prod-apps-truedesk` | User helpdesk & feature requests | 8084 | Proxied by NPM → `truedesk.maakleerplek.be` |
 | `hel-prod-apps-watchtower` | Nightly container auto-update | — | DBs excluded, runs at 04:00 |
+| `hel-prod-mon-grafana` | Dashboards | 3000 | Proxied by NPM → `grafana.int.maakleerplek.be` |
+| `hel-prod-mon-prometheus` | Metrics storage (30d retention) | — | Internal only |
+| `hel-prod-mon-node-exporter` | Host metrics | — | Internal only |
+| `hel-prod-mon-cadvisor` | Container metrics | — | Internal only |
 
 ## Planned Services
 
 | Service | Role |
 |---|---|
-| `hel-prod-mon-grafana` | Monitoring stack (Grafana + Prometheus + InfluxDB) |
 | `hel-prod-apps-webhook` | GitOps auto-deploy on git push (see `feature.md`) |

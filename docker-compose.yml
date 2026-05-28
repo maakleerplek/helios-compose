@@ -6,3 +6,4 @@ include:
   - services/hel-prod-apps-taiga/compose.yml
   - services/hel-prod-apps-truedesk/compose.yml
   - services/hel-prod-apps-watchtower/compose.yml
+  - services/hel-prod-mon/compose.yml
