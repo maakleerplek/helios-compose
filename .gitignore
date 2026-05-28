@@ -1,2 +1,2 @@
 secrets/.env
-secrets/coolify.env
+secrets/*.env
