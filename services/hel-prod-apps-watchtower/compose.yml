@@ -1,0 +1,11 @@
+services:
+  hel-prod-apps-watchtower:
+    image: containrrr/watchtower:1.7.1
+    container_name: hel-prod-apps-watchtower
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+      WATCHTOWER_CLEANUP: "true"          # remove old images after update
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"  # nightly at 04:00
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

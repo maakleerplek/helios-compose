@@ -3,5 +3,6 @@ name: hel-prod-stack
 # The include list: Docker merges these into one unified config at runtime.
 # Infrastructure-level services only — Coolify manages its own app stacks.
 include:
-  - services/hel-prod-apps-coolify/compose.yml
-  - services/hel-prod-inv-netbox/compose.yml
+  - services/hel-prod-apps-taiga/compose.yml
+  - services/hel-prod-apps-truedesk/compose.yml
+  - services/hel-prod-apps-watchtower/compose.yml

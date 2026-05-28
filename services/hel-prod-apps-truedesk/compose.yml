@@ -1,0 +1,36 @@
+services:
+  hel-prod-apps-truedesk-db:
+    image: mongo:6
+    container_name: hel-prod-apps-truedesk-db
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
+    environment:
+      TZ: 'Europe/Brussels'
+    volumes:
+      - /var/lib/docker-compose/hel-prod-apps-truedesk-db:/data/db
+    networks:
+      - truedesk
+
+  hel-prod-apps-truedesk:
+    image: polonel/trudesk:1.2.11
+    container_name: hel-prod-apps-truedesk
+    restart: unless-stopped
+    environment:
+      TZ: 'Europe/Brussels'
+      NODE_ENV: production
+      TRUDESK_DOMAIN: ${TRUEDESK_DOMAIN}
+      MONGODB_URI: mongodb://hel-prod-apps-truedesk-db:27017/trudesk
+    volumes:
+      - /var/lib/docker-compose/hel-prod-apps-truedesk:/usr/src/app/uploads
+    ports:
+      - "8084:8118"
+    networks:
+      - truedesk
+    depends_on:
+      - hel-prod-apps-truedesk-db
+
+networks:
+  truedesk:
+    name: hel-prod-truedesk
+    driver: bridge
