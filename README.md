@@ -78,10 +78,10 @@ make backup       # rsync data + secrets to TrueNAS
 
 | Service | Role | Port | Notes |
 |---|---|---|---|
-| `hel-prod-apps-taiga` | ICT project planning | 8083 | Proxied by NPM → `taiga.maakleerplek.be` |
-| `hel-prod-apps-truedesk` | User helpdesk & feature requests | 8084 | Proxied by NPM → `truedesk.maakleerplek.be` |
+| `hel-prod-apps-taiga` | ICT project planning | 8083 | Proxied by NPM → `ict.maakleerplek.be` |
+| `hel-prod-apps-truedesk` | User helpdesk & feature requests | 8084 | Proxied by NPM → `support.maakleerplek.be` |
 | `hel-prod-apps-watchtower` | Nightly container auto-update | — | DBs excluded, runs at 04:00 |
-| `hel-prod-mon-grafana` | Dashboards | 3000 | Proxied by NPM → `grafana.int.maakleerplek.be` |
+| `hel-prod-mon-grafana` | Dashboards | 3000 | Proxied by NPM → `monitor.int.maakleerplek.be` |
 | `hel-prod-mon-prometheus` | Metrics storage (30d retention) | — | Internal only |
 | `hel-prod-mon-node-exporter` | Host metrics | — | Internal only |
 | `hel-prod-mon-cadvisor` | Container metrics | — | Internal only |
