@@ -7,9 +7,6 @@ services:
       com.centurylinklabs.watchtower.enable: "false"
     environment:
       TZ: 'Europe/Brussels'
-      MONGO_INITDB_ROOT_USERNAME: ${TRUEDESK_DB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${TRUEDESK_DB_PASSWORD}
-      MONGO_INITDB_DATABASE: trudesk
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-truedesk-db:/data/db
     networks:
@@ -23,7 +20,7 @@ services:
       TZ: 'Europe/Brussels'
       NODE_ENV: production
       TRUDESK_DOMAIN: ${TRUEDESK_DOMAIN}
-      MONGODB_URI: mongodb://${TRUEDESK_DB_USER}:${TRUEDESK_DB_PASSWORD}@hel-prod-apps-truedesk-db:27017/trudesk?authSource=admin
+      MONGODB_URI: mongodb://hel-prod-apps-truedesk-db:27017/trudesk
     volumes:
       - /var/lib/docker-compose/hel-prod-apps-truedesk:/usr/src/app/uploads
     ports:
